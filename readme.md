@@ -1,8 +1,10 @@
-# Scrappey Wrapper - Data Extraction Made Easy
+# 🤖 Scrappey Wrapper - Data Extraction Made Easy
 
 Introducing Scrappey, your comprehensive website scraping solution provided by Scrappey.com. With Scrappey's powerful and user-friendly API, you can effortlessly retrieve data from websites, including those protected by Cloudflare. Join Scrappey today and revolutionize your data extraction process. 🚀
 
 **Disclaimer: Please ensure that your web scraping activities comply with the website's terms of service and legal regulations. Scrappey is not responsible for any misuse or unethical use of the library. Use it responsibly and respect the website's policies.**
+
+Website: https://scrappey.com/
 
 ## Topics
 
@@ -73,6 +75,8 @@ async function runTest() {
 runTest();
 
 ```
+
+For more information, please visit the [official Scrappey documentation](https://wiki.scrappey.com/getting-started). 📚
 
 ## License
 
