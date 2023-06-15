@@ -14,12 +14,12 @@ async function runTest() {
         console.log(session)
 
         // Make a GET request
-        const getRequestResult = await scrappey.getRequest('https://example.com', session.sessionId);
+        const getRequestResult = await scrappey.getRequest('https://reqres.in/api/users', session.sessionId);
         console.log('GET Request Result:', getRequestResult);
 
         // Make a POST request
         const postData = { username: 'user123', password: 'pass456' };
-        const postRequestResult = await scrappey.postRequest('https://example.com/login', postData, session.sessionId);
+        const postRequestResult = await scrappey.postRequest('https://reqres.in/api/users', postData, session.sessionId);
         console.log('POST Request Result:', postRequestResult);
 
         // Destroy the session
