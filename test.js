@@ -14,16 +14,16 @@ async function runTest() {
         console.log(session)
 
         // Make a GET request
-        const getRequestResult = await scrappey.getRequest('https://reqres.in/api/users', session.sessionId);
+        const getRequestResult = await scrappey.getRequest('https://reqres.in/api/users', session.session);
         console.log('GET Request Result:', getRequestResult);
 
         // Make a POST request
         const postData = { username: 'user123', password: 'pass456' };
-        const postRequestResult = await scrappey.postRequest('https://reqres.in/api/users', postData, session.sessionId);
+        const postRequestResult = await scrappey.postRequest('https://reqres.in/api/users', postData, session.session);
         console.log('POST Request Result:', postRequestResult);
 
         // Destroy the session
-        await scrappey.destroySession(session.sessionId);
+        await scrappey.destroySession(session.session);
         console.log('Session destroyed.');
     } catch (error) {
         console.error(error);
