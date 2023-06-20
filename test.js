@@ -9,17 +9,26 @@ const scrappey = new Scrappey(apiKey);
 async function runTest() {
     try {
         // Create a session
+        console.log("Creating sessionId.")
         const session = await scrappey.createSession();
-
-        console.log(session)
+        console.log(session);
 
         // Make a GET request
-        const getRequestResult = await scrappey.getRequest('https://reqres.in/api/users', session.session);
+        const getRequestOptions = {
+            url: 'https://reqres.in/api/users',
+            sessionId: session.session,
+        };
+        const getRequestResult = await scrappey.getRequest(getRequestOptions);
         console.log('GET Request Result:', getRequestResult);
 
         // Make a POST request
         const postData = { username: 'user123', password: 'pass456' };
-        const postRequestResult = await scrappey.postRequest('https://reqres.in/api/users', postData, session.session);
+        const postRequestOptions = {
+            url: 'https://reqres.in/api/users',
+            postData,
+            sessionId: session.session,
+        };
+        const postRequestResult = await scrappey.postRequest(postRequestOptions);
         console.log('POST Request Result:', postRequestResult);
 
         // Destroy the session

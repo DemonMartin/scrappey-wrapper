@@ -13,6 +13,11 @@ class Scrappey {
      * @param {string} apiKey - The API key for authentication.
      */
     constructor(apiKey) {
+
+        if (typeof apiKey === 'undefined' || apiKey.length === 0) {
+            throw new Error('apiKey parameter is required.');
+        }
+
         this.apiKey = apiKey;
         this.baseUrl = 'https://publisher.scrappey.com/api/v1';
     }
@@ -29,6 +34,13 @@ class Scrappey {
      */
     async sendRequest(endpoint, method, data = {}) {
         const url = `${this.baseUrl}?key=${this.apiKey}`;
+
+        if (typeof data?.proxy === "string") {
+            let validProxyStarts = ["socks4://", "socks5://", "http://", "https://"];
+            if (!validProxyStarts.some(start => data.proxy.toLowerCase().startsWith(start))) {
+                throw new Error(`Proxy must start with: ${validProxyStarts.join(", ")}`);
+            }
+        }
 
         const options = {
             url,
@@ -51,15 +63,18 @@ class Scrappey {
     }
 
     /**
-     * Creates a new browser session.
-     *
-     * @param {string|null} [sessionId] - The ID to assign to the session.
-     * @param {Object|null} [proxy] - Proxy configuration for the session.
-     * @returns {Promise<string>} The ID of the created session.
-     */
-    async createSession(sessionId = null, proxy = null) {
+    * Creates a new browser session.
+    *
+    * @param {Object} options - The options for creating a session.
+    * @param {string|null} [options.sessionId] - The ID to assign to the session.
+    * @param {Object|null} [options.proxy] - Proxy configuration for the session.
+    * @returns {Promise<string>} The ID of the created session.
+    */
+    async createSession(options = {}) {
+        const { sessionId = null, proxy = null } = options;
         return this.sendRequest('sessions.create', 'POST', { session: sessionId, proxy });
     }
+
 
     /**
      * Destroys a browser session.
@@ -68,7 +83,7 @@ class Scrappey {
      * @returns {Promise<void>}
      */
     async destroySession(sessionId) {
-        if (typeof sessionId === "undefined") {
+        if (typeof sessionId === 'undefined') {
             throw new Error('sessionId parameter is required.');
         }
 
@@ -78,36 +93,49 @@ class Scrappey {
     /**
      * Sends a GET request through Scrappey.com.
      *
-     * @param {string} url - The URL of the website to scrape.
-     * @param {string|null} [sessionId] - The ID of the session to use for the request.
-     * @param {Object|null} [cookiejar] - Cookies to be sent with the request.
-     * @param {Object|null} [proxy] - Proxy configuration for the request.
+     * @param {Object} options - The options for the GET request.
+     * @param {string} options.url - The URL of the website to scrape.
+     * @param {string|null} [options.sessionId] - The ID of the session to use for the request.
+     * @param {Object|null} [options.cookiejar] - Cookies to be sent with the request.
+     * @param {Object|null} [options.proxy] - Proxy configuration for the request.
      * @returns {Promise<Object>} The response from the request.
      */
-    async getRequest(url, sessionId = null, cookiejar = null, proxy = null) {
-        if (typeof url === "undefined") {
+    async getRequest(options) {
+        const { url, sessionId = null, cookiejar = null, proxy = null } = options;
+
+        if (typeof url === 'undefined') {
             throw new Error('url parameter is required.');
         }
 
-        if (typeof sessionId === "undefined" && typeof cookiejar === "undefined" && typeof proxy === "undefined") {
-            throw new Error('At least one of sessionId, cookiejar, or proxy parameters must be provided.');
-        }
-
-        return this.sendRequest('request.get', 'POST', { url, session: sessionId, cookiejar, proxy });
+        return this.sendRequest('request.get', 'POST', {
+            url,
+            session: sessionId,
+            cookiejar,
+            proxy
+        });
     }
 
     /**
-   * Sends a POST request through Scrappey.com.
-   *
-   * @param {string} url - The URL of the website to scrape.
-   * @param {string|Object} postData - The data to be sent in the request body. It should be in `application/x-www-form-urlencoded` format.
-   * @param {string|null} [sessionId] - The ID of the session to use for the request.
-   * @param {Object|null} [cookiejar] - Cookies to be sent with the request.
-   * @param {Object|null} [proxy] - Proxy configuration for the request.
-   * @returns {Promise<Object>} The response from the POST request.
-   * @throws {Error} If the postData is not in `application/x-www-form-urlencoded` format and cannot be converted.
-   */
-    async postRequest(url, postData, sessionId = null, cookiejar = null, proxy = null) {
+     * Sends a POST request through Scrappey.com.
+     *
+     * @param {Object} options - The options for the POST request.
+     * @param {string} options.url - The URL of the website to scrape.
+     * @param {string|Object} options.postData - The data to be sent in the request body. It should be in `application/x-www-form-urlencoded` format.
+     * @param {string|null} [options.sessionId] - The ID of the session to use for the request.
+     * @param {Object|null} [options.cookiejar] - Cookies to be sent with the request.
+     * @param {Object|null} [options.proxy] - Proxy configuration for the request.
+     * @returns {Promise<Object>} The response from the POST request.
+     * @throws {Error} If the postData is not in `application/x-www-form-urlencoded` format and cannot be converted.
+     */
+    async postRequest(options) {
+        const {
+            url,
+            postData,
+            sessionId = null,
+            cookiejar = null,
+            proxy = null
+        } = options;
+
         // Check if postData is already in application/x-www-form-urlencoded format
         const isFormData = typeof postData === 'string' && postData.includes('=');
 
@@ -117,16 +145,23 @@ class Scrappey {
             try {
                 requestData = new URLSearchParams(postData).toString();
             } catch (error) {
-                throw new Error('Invalid postData format. It must be in application/x-www-form-urlencoded format.');
+                throw new Error(
+                    'Invalid postData format. It must be in application/x-www-form-urlencoded format.'
+                );
             }
         } else {
             requestData = postData;
         }
 
         // Continue with the rest of the code
-        return this.sendRequest('request.post', 'POST', { url, postData: requestData, session: sessionId, cookiejar, proxy });
+        return this.sendRequest('request.post', 'POST', {
+            url,
+            postData: requestData,
+            session: sessionId,
+            cookiejar,
+            proxy
+        });
     }
-
 }
 
 module.exports = Scrappey;
