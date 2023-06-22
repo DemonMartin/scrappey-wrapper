@@ -101,17 +101,14 @@ class Scrappey {
      * @returns {Promise<Object>} The response from the request.
      */
     async getRequest(options) {
-        const { url, sessionId = null, cookiejar = null, proxy = null } = options;
+        const { url } = options;
 
         if (typeof url === 'undefined') {
             throw new Error('url parameter is required.');
         }
 
         return this.sendRequest('request.get', 'POST', {
-            url,
-            session: sessionId,
-            cookiejar,
-            proxy
+            ...options
         });
     }
 
@@ -128,38 +125,9 @@ class Scrappey {
      * @throws {Error} If the postData is not in `application/x-www-form-urlencoded` format and cannot be converted.
      */
     async postRequest(options) {
-        const {
-            url,
-            postData,
-            sessionId = null,
-            cookiejar = null,
-            proxy = null
-        } = options;
-
-        // Check if postData is already in application/x-www-form-urlencoded format
-        const isFormData = typeof postData === 'string' && postData.includes('=');
-
-        // If postData is not in the correct format, try to convert it
-        let requestData;
-        if (!isFormData) {
-            try {
-                requestData = new URLSearchParams(postData).toString();
-            } catch (error) {
-                throw new Error(
-                    'Invalid postData format. It must be in application/x-www-form-urlencoded format.'
-                );
-            }
-        } else {
-            requestData = postData;
-        }
-
         // Continue with the rest of the code
         return this.sendRequest('request.post', 'POST', {
-            url,
-            postData: requestData,
-            session: sessionId,
-            cookiejar,
-            proxy
+            ...options
         });
     }
 }
