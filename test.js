@@ -22,6 +22,7 @@ async function runTest() {
         console.log('GET Request Result:', getRequestResult);
 
         // Make a POST request
+        // This all under the same session ID, so you don't need to pass cookies again
         const postData = { username: 'user123', password: 'pass456' };
         const postRequestOptions = {
             url: 'https://reqres.in/api/users',
@@ -30,6 +31,19 @@ async function runTest() {
         };
         const postRequestResult = await scrappey.postRequest(postRequestOptions);
         console.log('POST Request Result:', postRequestResult);
+
+        // Make a JSON post request
+        const postDataJson = JSON.stringify({ email: "email@email.com", password: "password"})
+        const postRequestOptionsJson = {
+            url: "https://backend.scrappey.com/api/auth/login",
+            postDataJson,
+            customHeaders: {
+                'Content-Type': 'application/json',
+            },
+            sessionId: session.session,
+        };
+        const postRequestResultJson = await scrappey.postRequest(postRequestOptionsJson);
+        console.log('POST Request Result:', postRequestResultJson);
 
         // Destroy the session
         await scrappey.destroySession(session.session);
