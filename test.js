@@ -22,6 +22,7 @@ async function runTest() {
         console.log('GET Request Result:', getRequestResult);
 
         // Make a POST request
+        // This all under the same session ID, so you don't need to pass cookies again
         const postData = { username: 'user123', password: 'pass456' };
         const postRequestOptions = {
             url: 'https://reqres.in/api/users',
