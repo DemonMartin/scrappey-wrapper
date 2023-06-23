@@ -33,6 +33,7 @@ class Scrappey {
 
     /**
     * @typedef {Object} createOptions
+    * @property {string|null} [session] - (optional) The ID of the session to use for the request. 
     * @property {string|null} [proxy] - (optional) Proxy configuration for the request.
     * @property {ProxyCountry|null} [proxyCountry] - (optional) Select the proxyCountry which will be used if no custom proxy is defined.
     */
