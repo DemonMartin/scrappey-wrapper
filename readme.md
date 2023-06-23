@@ -86,13 +86,11 @@ async function run() {
         const postRequestResultJson = await scrappey.postRequest({
             url: 'https://reqres.in/api/users',
             postData: JSON.stringify(postJsonData),
-            headers: {
+            customHeaders: {
                 'Content-Type': 'application/json', // Optional. To avoid issues please still add if you send JSON Data.
+                // 'auth': 'token'
             },
             session,
-            // customHeaders: {
-            //     "auth": "token"
-            // },
             // proxyCountry: "UnitedStates"
             // & more!
         });

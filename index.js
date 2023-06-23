@@ -258,7 +258,7 @@ class Scrappey {
     * @returns {Promise<Object>} The response from the request.
     */
     async createSession(options = {}) {
-        return this.sendRequest('sessions.create', { options });
+        return this.sendRequest('sessions.create', { ...options });
     }
 
 
