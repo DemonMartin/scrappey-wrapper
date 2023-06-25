@@ -378,10 +378,13 @@ class Scrappey {
 
         // If Users forget to give that content-type but data is json, it will be added automatically.
         if (this.isJSON(options.postData)) {
-            let jsonpostData = JSON.parse(options.postData)
-
-            if (!Object.keys(jsonpostData).map(key => key.toLowerCase()).includes("content-type")) {
-                options.postData = JSON.stringify({ ...jsonpostData, "content-type": "application/json" })
+            let headerKeys = Object.keys(options?.customHeaders || {});
+            if (typeof options?.customHeaders === "undefined" || headerKeys.length === 0) {
+                options.customHeaders = { "content-type": "application/json" };
+            } else if (
+                typeof options.customHeaders === "object" &&
+                !headerKeys.map(key => key.toLowerCase()).includes("content-type")) {
+                options.customHeaders = { ...options.customHeaders, "content-type": "application/json" };
             }
         }
 
