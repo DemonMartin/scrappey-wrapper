@@ -1,3 +1,4 @@
+# OUTDATED, USE: https://www.npmjs.com/package/scrappey-wrapper
 # 🤖 Scrappey Wrapper - Data Extraction Made Easy
 
 Introducing Scrappey, your comprehensive website scraping solution provided by Scrappey.com. With Scrappey's powerful and user-friendly API, you can effortlessly retrieve data from websites, including those protected by Cloudflare. Join Scrappey today and revolutionize your data extraction process. 🚀
